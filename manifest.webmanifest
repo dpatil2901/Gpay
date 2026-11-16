@@ -1,6 +1,6 @@
 {
-  "name": "Balance Preview",
-  "short_name": "Balance Preview",
+  "name": "G-Paay",
+  "short_name": "G-Paay",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

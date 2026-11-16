@@ -109,7 +109,7 @@ function requestBalanceReveal(){
 function verifyDemoPin(event){
  event.preventDefault();
  if(document.getElementById("verifyInput").value==="7887"){
-  balanceVisible=true;document.getElementById("amount").textContent="₹1,04,998.00";document.getElementById("eye").textContent="◉";document.getElementById("eye").setAttribute("aria-label","Hide balance");document.getElementById("verifyGate").style.display="none";document.getElementById("verifyInput").value="";document.getElementById("verifyError").textContent="";
+  balanceVisible=true;document.getElementById("amount").textContent="₹1,04,992.00";document.getElementById("eye").textContent="◉";document.getElementById("eye").setAttribute("aria-label","Hide balance");document.getElementById("verifyGate").style.display="none";document.getElementById("verifyInput").value="";document.getElementById("verifyError").textContent="";
  } else {document.getElementById("verifyError").textContent="Incorrect passcode. Try again.";document.getElementById("verifyInput").value="";}
  return false;
 }
