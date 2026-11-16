@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#edf2ff">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Balance Preview</title>
+<style>
+.pin-overlay{position:fixed;inset:0;z-index:10;background:linear-gradient(160deg,#edf2ff,#f4f6ff);display:flex;align-items:center;justify-content:center;padding:24px}
+.pin-box{width:100%;max-width:360px;background:#fff;border-radius:24px;padding:28px 24px;box-shadow:0 12px 35px rgba(38,65,120,.10);text-align:center}
+.pin-box h2{margin:0 0 8px;font-size:24px}.pin-box p{color:#667085;font-size:14px;line-height:1.45}
+.pin-input{width:100%;padding:14px;border:1px solid #cbd5e1;border-radius:10px;font-size:22px;text-align:center;letter-spacing:8px;margin:12px 0}
+.pin-button{width:100%;border:0;border-radius:10px;background:#1768bd;color:#fff;padding:14px;font-size:16px;font-weight:700}
+.pin-error{height:18px;color:#b42318;font-size:13px;margin-top:9px}
+.verify-overlay{position:fixed;inset:0;z-index:20;background:rgba(16,24,40,.42);display:none;align-items:center;justify-content:center;padding:24px}
+*{box-sizing:border-box}
+body{margin:0;background:#edf2ff;font-family:Arial,Helvetica,sans-serif;color:#111}
+.app{max-width:520px;min-height:100vh;margin:auto;padding:16px 18px 28px;background:linear-gradient(160deg,#edf2ff,#f4f6ff)}
+.status{height:32px;display:flex;justify-content:space-between;align-items:center;padding:0 10px;font-size:15px}
+.header{display:flex;align-items:center;gap:12px;margin:27px 10px 45px}
+.gmark{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#4285f4 0 35%,#34a853 35% 60%,#fbbc05 60% 80%,#ea4335 80%);transform:rotate(-18deg)}
+.brand{font-size:25px;font-weight:600;letter-spacing:-.8px}
+.profile{margin-left:auto;width:58px;height:58px;border-radius:50%;background:#087b8b;color:#fff;display:grid;place-items:center;font-size:25px}
+.demo-tag{margin:0 0 10px;text-align:center;color:#8c2635;font-size:11px;font-weight:800;letter-spacing:1px}
+.balance-card{border-radius:29px;background:rgba(255,255,255,.62);padding:30px 27px 34px;min-height:316px}
+.bankrow{display:flex;align-items:center;gap:22px}
+.banklogo{height:88px;width:88px;border:1px solid #cfd4dd;border-radius:27px;display:grid;place-items:center;background:rgba(255,255,255,.38);flex:none}
+.banklogo b{font-size:48px;color:#a51e50;transform:skew(-13deg)}
+.bankname{font-size:23px;font-weight:700;line-height:1.35}
+.account{font-size:19px;color:#5d626d;margin-top:2px}
+.amountrow{display:flex;align-items:center;gap:8px;margin-top:46px}
+.amount{font-size:clamp(35px,8.2vw,48px);font-weight:700;letter-spacing:-1.5px;white-space:nowrap}
+.eye{border:0;background:none;font-size:30px;color:#555b65;margin-left:auto;cursor:pointer}
+.available{font-size:20px;color:#5b6069;margin-top:7px}
+.actions{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:38px 2px 34px;text-align:center}
+.action .icon{width:66px;height:66px;margin:0 auto 9px;border-radius:50%;background:#dce8ff;color:#1768bd;display:grid;place-items:center;font-size:30px}
+.action .caption{font-size:16px;line-height:1.35}
+.reward{display:flex;align-items:center;gap:19px;background:rgba(219,231,255,.78);border-radius:24px;padding:20px 22px}
+.trophy{font-size:35px}
+.reward-title{font-size:21px;font-weight:700}
+.reward-copy{font-size:16px;line-height:1.4;color:#344563;margin-top:4px}
+.bottom{display:flex;justify-content:space-around;margin: auto -18px 0;padding:18px 8px 4px;background:rgba(255,255,255,.42);color:#48515f}
+.bottom span{text-align:center;font-size:14px}
+.bottom b{display:block;font-size:24px;margin-bottom:5px}
+.footer{text-align:center;font-size:10px;font-weight:800;letter-spacing:.6px;color:#8e3340;margin-top:13px}
+@media(max-width:390px){.app{padding-left:12px;padding-right:12px}.balance-card{padding:24px 18px}.banklogo{width:72px;height:72px}.bankname{font-size:19px}.account{font-size:16px}.action .icon{width:55px;height:55px}.action .caption{font-size:13px}.reward{padding:17px}.reward-title{font-size:18px}.reward-copy{font-size:14px}}
+</style>
+</head>
+<body>
+<div class="pin-overlay" id="pinGate">
+  <div class="pin-box">
+    <h2>Enter PIN</h2>
+    <p>Private sample viewer · illustrative balance only</p>
+    <form onsubmit="return unlockDemo(event)">
+      <input class="pin-input" id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" aria-label="4-digit PIN" autocomplete="off" required>
+      <button class="pin-button" type="submit">Continue</button>
+    </form>
+    <div class="pin-error" id="pinError" aria-live="polite"></div>
+  </div>
+</div>
+<div class="verify-overlay" id="verifyGate">
+  <div class="pin-box">
+    <h2>Enter app passcode</h2>
+    <p>Enter the 4-digit sample passcode to reveal the illustrative balance.</p>
+    <form onsubmit="return verifyDemoPin(event)">
+      <input class="pin-input" id="verifyInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" aria-label="Enter app passcode PIN" autocomplete="off" required>
+      <button class="pin-button" type="submit">Verify</button>
+    </form>
+    <div class="pin-error" id="verifyError" aria-live="polite"></div>
+  </div>
+</div>
+<main class="app">
+  <header class="header">
+    <div class="gmark" aria-hidden="true"></div><div class="brand">Balance Preview</div>
+    <div class="profile">D</div>
+  </header>
+  <section class="balance-card">
+    <div class="bankrow">
+      <div class="banklogo"><b>A</b></div>
+      <div><div class="bankname">Axis Bank •••• 4321</div><div class="account">Savings account</div></div>
+    </div>
+    <div class="amountrow">
+      <div class="amount" id="amount">₹••••••</div>
+      <button class="eye" id="eye" onclick="requestBalanceReveal()" aria-label="View balance">◎</button>
+    </div>
+    <div class="available">Available balance</div>
+  </section>
+  <section class="actions">
+    <div class="action"><div class="icon">↗</div><div class="caption">Send<br>money</div></div>
+    <div class="action"><div class="icon">▦</div><div class="caption">Scan any<br>QR code</div></div>
+    <div class="action"><div class="icon">♧</div><div class="caption">Pay<br>contacts</div></div>
+    <div class="action"><div class="icon">▤</div><div class="caption">Pay<br>bills</div></div>
+    <div class="action"><div class="icon">▯</div><div class="caption">Mobile<br>recharge</div></div>
+  </section>
+  <section class="reward">
+    <div class="trophy">🏆</div>
+    <div><div class="reward-title">Rewards for you</div><div class="reward-copy">Earn rewards and get cashback<br>on your payments</div></div>
+  </section>
+  <div class="footer">ILLUSTRATIVE DISPLAY · NOT A LIVE BANK BALANCE</div>
+</main>
+<script>
+let balanceVisible=false;
+function requestBalanceReveal(){
+ if(!balanceVisible){document.getElementById("verifyGate").style.display="flex";document.getElementById("verifyInput").focus();}
+ else {balanceVisible=false;document.getElementById("amount").textContent="₹••••••";document.getElementById("eye").textContent="◎";document.getElementById("eye").setAttribute("aria-label","View balance");}
+}
+function verifyDemoPin(event){
+ event.preventDefault();
+ if(document.getElementById("verifyInput").value==="7887"){
+  balanceVisible=true;document.getElementById("amount").textContent="₹1,04,998.00";document.getElementById("eye").textContent="◉";document.getElementById("eye").setAttribute("aria-label","Hide balance");document.getElementById("verifyGate").style.display="none";document.getElementById("verifyInput").value="";document.getElementById("verifyError").textContent="";
+ } else {document.getElementById("verifyError").textContent="Incorrect passcode. Try again.";document.getElementById("verifyInput").value="";}
+ return false;
+}
+function unlockDemo(event){
+ event.preventDefault();
+ const pin=document.getElementById("pinInput").value;
+ if(pin==="7887"){document.getElementById("pinGate").style.display="none";return false;}
+ document.getElementById("pinError").textContent="Incorrect PIN. Try again.";
+ document.getElementById("pinInput").value="";
+ return false;
+}
+</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}</script>
+</body>
+</html>
