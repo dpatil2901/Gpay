@@ -1,4 +1,4 @@
-BALANCE PREVIEW — ANDROID INSTALLATION
+G-PAY— ANDROID INSTALLATION
 
 This is an installable web app (PWA), not an APK and not a banking app.
 It displays an illustrative sample balance only. It is not connected to Axis Bank,
