@@ -1,6 +1,6 @@
 {
-  "name": "G-Paay",
-  "short_name": "G-Paay",
+  "name": "G-Pay",
+  "short_name": "G-Pay",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
