@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#edf2ff",
   "theme_color": "#edf2ff",
-  "description": "Offline illustrative balance preview. Not a banking or payment application.",
+  "description": "Banking app",
   "icons": [
     {
       "src": "./icon.svg",
